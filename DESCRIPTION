@@ -14,12 +14,15 @@ Imports:
     ggplot2,
     intervals,
     magrittr,
+    ORFik,
     patchwork,
     purrr,
     seqinr,
+    stats,
     stringr,
     tibble,
     tidyr,
+    utils,
     viridis
 Encoding: UTF-8
 LazyData: true
