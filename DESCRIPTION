@@ -24,6 +24,7 @@ Imports:
     tidyr,
     utils,
     viridis
+biocViews:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
