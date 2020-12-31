@@ -10,7 +10,17 @@ Authors@R:
 Description: What the package does (one paragraph).
 License: GPL-3
 Imports: 
-    magrittr
+    dplyr,
+    ggplot2,
+    intervals,
+    magrittr,
+    patchwork,
+    purrr,
+    seqinr,
+    stringr,
+    tibble,
+    tidyr,
+    viridis
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
