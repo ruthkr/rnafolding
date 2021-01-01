@@ -1,4 +1,18 @@
-run_sliding_windows <- function(filename, winsize, span = NULL, stepsize, increased_sample = TRUE, rnafold_params = "-p", verbose = FALSE) {
+#' Fold with Sliding Windows
+#'
+#' @param filename
+#' @param winsize
+#' @param span
+#' @param stepsize
+#' @param increased_sample
+#' @param rnafold_params
+#' @param verbose
+#'
+#' @return
+#' @export
+#'
+#' @examples
+fold <- function(filename, winsize, span = NULL, stepsize, increased_sample = TRUE, rnafold_params = "-p", verbose = FALSE) {
   # Read whole sequence
   fasta <- seqinr::read.fasta(filename)
   seq <- fasta[[1]] %>%
