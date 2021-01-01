@@ -12,7 +12,7 @@ build_UTRs_data(utr5_lims = NULL, utr3_lims = NULL)
 \item{utr3_lims}{Vector of lower and upper limits of UTR 3'}
 }
 \value{
-Data frame with \code{start} and \code{end} of each UTR.
+Data frame specifying \code{start} and \code{end} of each UTR.
 }
 \description{
 Build UTRs Data Frame

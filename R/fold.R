@@ -5,12 +5,12 @@
 #'
 #' @param filename The name of the file which the sequences in FASTA format are to be read from.
 #' @param winsize Window size of the sliding windows.
-#' @param stepsize Stepsize of the sliding windows.
-#' @param same_num_samples If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for the calculation of Shannon's entropy.
-#' @param rnafold_params Parameters used by RNAfold. The default is '-p'.
-#' @param verbose If TRUE, fold will print information of performance
+#' @param stepsize Step size of the sliding windows.
+#' @param same_num_samples If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for calculating Shannon's entropy.
+#' @param rnafold_params Parameters used by \code{RNAfold}. The default is '-p'.
+#' @param verbose If TRUE, fold will print information of performance.
 #'
-#' @return List of RNAfold results for each sliding window
+#' @return List of \code{RNAfold} results for each sliding window.
 #' @export
 fold <- function(filename, winsize, stepsize, same_num_samples = TRUE, rnafold_params = "-p", verbose = FALSE) {
   # Read whole sequence

@@ -18,16 +18,16 @@ fold(
 
 \item{winsize}{Window size of the sliding windows.}
 
-\item{stepsize}{Stepsize of the sliding windows.}
+\item{stepsize}{Step size of the sliding windows.}
 
-\item{same_num_samples}{If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for the calculation of Shannon's entropy.}
+\item{same_num_samples}{If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for calculating Shannon's entropy.}
 
-\item{rnafold_params}{Parameters used by RNAfold. The default is '-p'.}
+\item{rnafold_params}{Parameters used by \code{RNAfold}. The default is '-p'.}
 
-\item{verbose}{If TRUE, fold will print information of performance}
+\item{verbose}{If TRUE, fold will print information of performance.}
 }
 \value{
-List of RNAfold results for each sliding window
+List of \code{RNAfold} results for each sliding window.
 }
 \description{
 Perform folding inference using sliding windows and \code{RNAfold} from the
