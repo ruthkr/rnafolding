@@ -115,6 +115,29 @@ add_region_split_group <- function(data, splits, type = c("orf", "utr")) {
   return(data)
 }
 
+#' Count Window Appearances
+#'
+#' Count on how many sliding windows the pair \code{(i, j)} was slid over.
+#'
+#' @param pos_i Position of nucleotide \code{i}.
+#' @param pos_j Position of nucleotide \code{j}.
+#' @param windows_list List of \code{RNAfold} results for each sliding window. Result of \code{fold()} function.
+#'
+#' @return Integer of window appearance count.
+count_window_appearances <- function(pos_i, pos_j, windows_list) {
+  count_appearances <- windows_list %>%
+    purrr::map(
+      function(x) {
+        pos_i >= x[["start_nt"]] & pos_i <= x[["end_nt"]] &
+          pos_j >= x[["start_nt"]] & pos_j <= x[["end_nt"]]
+      }
+    ) %>%
+    unlist() %>%
+    sum()
+
+  return(count_appearances)
+}
+
 #' Define Arc Segment
 #'
 #' @param c Vector c(x, y) defining center of the arc.
