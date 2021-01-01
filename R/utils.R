@@ -114,3 +114,45 @@ add_region_split_group <- function(data, splits, type = c("orf", "utr")) {
 
   return(data)
 }
+
+#' Define Arc Segment
+#'
+#' @param c Vector c(x, y) defining center of the arc.
+#' @param r Radius of the arc.
+#' @param angles Angles between which the arc segment is defined.
+#' @param length Length of points defining the arc segment.
+#'
+#' @return Data frame of \code{(x, y)} points defining the arc segment.
+arc_segment <- function(c, r, angles = c(0, pi), length = 100) {
+  seqang <- seq(angles[1], angles[2], length = length)
+  x <- c[1] + r * cos(seqang)
+  y <- c[2] + r * sin(seqang)
+
+  data <- data.frame(
+    arc_x = x,
+    arc_y = y
+  )
+
+  return(data)
+}
+
+#' Calculate Arc Trajectory Between Two Points
+#'
+#' Calculates the arc trajectory between two points on the \code{x} axis.
+#'
+#' @param i Position of tarting point.
+#' @param j Position of ending point.
+#'
+#' @return Arc trajectory.
+get_arc_trajectory <- function(i, j) {
+  pair <- c(i, j)
+  center <- c(mean(pair), 0)
+  radius <- abs(diff(pair)) / 2
+
+  arc_trajectory <- dplyr::bind_cols(
+    data.frame(pos_i = i, pos_j = j),
+    arc_segment(center, radius)
+  )
+
+  return(arc_trajectory)
+}
