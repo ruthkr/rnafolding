@@ -30,5 +30,6 @@ fold(
 List of RNAfold results for each sliding window
 }
 \description{
-Fold with Sliding Windows
+Perform folding inference using sliding windows and \code{RNAfold} from the
+ViennaRNA Package 2.0 by Lorenz et al. \url{doi:10.1186/1748-7188-6-26}.
 }

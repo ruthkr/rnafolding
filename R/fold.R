@@ -1,5 +1,8 @@
 #' Fold with Sliding Windows
 #'
+#' Perform folding inference using sliding windows and \code{RNAfold} from the
+#' ViennaRNA Package 2.0 by Lorenz et al. <doi:10.1186/1748-7188-6-26>.
+#'
 #' @param filename The name of the file which the sequences in FASTA format are to be read from.
 #' @param winsize Window size of the sliding windows.
 #' @param stepsize Stepsize of the sliding windows.
@@ -89,7 +92,7 @@ fold <- function(filename, winsize, stepsize, same_num_samples = TRUE, rnafold_p
           window = window
         ) %>%
         dplyr::select(window, pos_i, pos_j, prob)
-        # dplyr::filter(abs(pos_j - pos_i) <= span)
+      # dplyr::filter(abs(pos_j - pos_i) <= span)
     } else {
       next()
     }
