@@ -51,7 +51,7 @@ get_split_intervals <- function(nt_num, num_facets) {
   return(intervals_data)
 }
 
-#' Add Split Group to Data
+#' Add Split Group to Positional Data
 #'
 #' Adds position split \code{group} variable to data frames when using facets
 #' in \code{plot_summary_map()} function.
@@ -60,8 +60,8 @@ get_split_intervals <- function(nt_num, num_facets) {
 #' @param nt_num Number of nucleotides of the sequence.
 #' @param num_facets Number of facets or splits.
 #'
-#' @return Data frame with additional \code{group} variable.
-add_split_group <- function(data, nt_num, num_facets) {
+#' @return Data frame with additional grouping variable.
+add_position_split_group <- function(data, nt_num, num_facets) {
   facet_width <- ceiling(nt_num / num_facets)
 
   data <- data %>%
@@ -72,6 +72,45 @@ add_split_group <- function(data, nt_num, num_facets) {
       ),
       group = factor(group, labels = 1:num_facets)
     )
+
+  return(data)
+}
+
+#' Add Split Group to Region Data
+#'
+#' Adds position split \code{group} variable to data frames when using facets
+#' in \code{plot_summary_map()} function.
+#'
+#' @param data Data frame describing ORFs or UTRs.
+#' @param splits Split intervals data frame, result of \code{get_split_intervals()}.
+#' @param type Type of region data. Either "orf" or "utr".
+#'
+#' @return Data frame with additional grouping variable(s).
+add_region_split_group <- function(data, splits, type = c("orf", "utr")) {
+  type <- match.arg(type)
+
+  data <- data %>%
+    tidyr::crossing(splits) %>%
+    # Check intersection
+    dplyr::mutate(
+      intersect = !(split_start > end | start > split_end)
+    ) %>%
+    dplyr::filter(intersect) %>%
+    # Fix limits
+    dplyr::mutate(
+      start = ifelse(start < split_start, split_start, start),
+      end = ifelse(end > split_end, split_end, end)
+    )
+
+  # Select used variables
+  if (type == "orf") {
+    data <- data %>%
+      dplyr::mutate(interval_group = as.factor(interval_group)) %>%
+      dplyr::select(start, end, interval_group, group)
+  } else if (type == "utr") {
+    data <- data %>%
+      dplyr::select(start, end, utr, group)
+  }
 
   return(data)
 }
