@@ -1,18 +1,3 @@
-split_plot <- function(data, nt_num, num_facets) {
-  facet_width <- ceiling(nt_num / num_facets)
-
-  data <- data %>%
-    dplyr::mutate(
-      group = cut(
-        x = position,
-        breaks = seq(0, num_facets * facet_width, facet_width)
-      ),
-      group = factor(group, labels = 1:num_facets)
-    )
-
-  return(data)
-}
-
 plot_entropy <- function(entropy_data, split_limits, hide_x = FALSE) {
   gg <- entropy_data %>%
     ggplot2::ggplot() +
@@ -37,7 +22,7 @@ plot_entropy <- function(entropy_data, split_limits, hide_x = FALSE) {
   return(gg)
 }
 
-plot_base_pairing <- function(base_pairing_data, prob_cutoff = 0.9, split_limits, hide_x = FALSE) {
+plot_base_pairs <- function(base_pairing_data, prob_cutoff = 0.9, split_limits, hide_x = FALSE) {
   gg <- base_pairing_data %>%
     ggplot2::ggplot() +
     ggplot2::aes(
@@ -103,7 +88,7 @@ plot_orfs <- function(orf_data, split_limits, hide_x = FALSE) {
     ggplot2::scale_y_continuous(
       limits = c(4, 11)
     ) +
-    ggplot2::facet_grid(int_group ~ .) +
+    ggplot2::facet_grid(interval_group ~ .) +
     ggplot2::labs(y = "ORFs") +
     ggplot2::theme(
       # Facet stripts
@@ -183,9 +168,10 @@ plot_utrs <- function(utr_data, split_limits, hide_x = FALSE) {
   return(gg)
 }
 
-plot_structure_map <- function(window_results, utr5_lims = NULL, utr3_lims = NULL, num_facets = 3, freq_cutoff = 0.5, prob_cutoff = 0.9, plot_list = c("entropy", "bpp", "orf", "utr")) {
+plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NULL, num_facets = 3, freq_cutoff = 0.5, prob_cutoff = 0.9, plot_list = c("entropy", "bpp", "orf", "utr")) {
   # Sequence properties
-  sequence_length <- attr(window_results, "seq_length")
+  sequence_length <- attr(windowed_folds, "seq_length")
+  seq <- attr(windowed_folds, "seq")
 
   # Parse plot selection
   entropy_bool <- "entropy" %in% plot_list
@@ -199,32 +185,31 @@ plot_structure_map <- function(window_results, utr5_lims = NULL, utr3_lims = NUL
 
   # Calculate Entropy
   if (entropy_bool) {
-    entropy_data <- window_results %>%
+    entropy_data <- windowed_folds %>%
       aggregate_shannon_entropy(prob_cutoff = 0) %>%
-      split_plot(nt_num = sequence_length, num_facets)
+      add_position_split_group(nt_num = sequence_length, num_facets)
   }
 
   # Calculate Folding
   if (bpp_bool) {
-    folding <- window_results %>%
+    base_pair_data <- windowed_folds %>%
       aggregate_positional_freq(freq_cutoff, prob_cutoff) %>%
       clean_folding_pairs() %>%
-      dplyr::select(-rowid)
-
-    base_pair_data <- calculate_folding_pairs(folding) %>%
-      split_plot(nt_num = sequence_length, num_facets)
+      dplyr::select(-rowid) %>%
+      calculate_folding_pairs() %>%
+      add_position_split_group(nt_num = sequence_length, num_facets)
   }
 
   # Calculate ORFs
   if (orf_bool) {
-    orf_data <- get_ORFs(window_results) %>%
-      split_ORFs(splits)
+    orf_data <- get_ORFs(seq, calc_groups = TRUE) %>%
+      add_region_split_group(splits, type = "orf")
   }
 
   # Parse UTRs
   if (utr_bool) {
     utr_data <- build_UTRs_data(utr5_lims, utr3_lims) %>%
-      split_UTRs(splits)
+      add_region_split_group(splits, type = "utr")
   }
 
   # Create list of plots
@@ -248,7 +233,7 @@ plot_structure_map <- function(window_results, utr5_lims = NULL, utr3_lims = NUL
     if (bpp_bool) {
       plot_list[[paste0("base_pair_", facet)]] <- base_pair_data %>%
         dplyr::filter(group == facet) %>%
-        plot_base_pairing(
+        plot_base_pairs(
           prob_cutoff = prob_cutoff,
           split_limits,
           hide_x = ("bpp" != last_plot)
