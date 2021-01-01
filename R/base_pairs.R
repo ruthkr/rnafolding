@@ -1,3 +1,68 @@
+#' Count Window Appearances
+#'
+#' Count on how many sliding windows the pair \code{(i, j)} was slid over.
+#'
+#' @param pos_i Position of nucleotide \code{i}.
+#' @param pos_j Position of nucleotide \code{j}.
+#' @param windows_list List of \code{RNAfold} results for each sliding window. Result of \code{fold()} function.
+#'
+#' @return Integer of window appearance count.
+count_window_appearances <- function(pos_i, pos_j, windows_list) {
+  count_appearances <- windows_list %>%
+    purrr::map(
+      function(x) {
+        pos_i >= x[["start_nt"]] & pos_i <= x[["end_nt"]] &
+          pos_j >= x[["start_nt"]] & pos_j <= x[["end_nt"]]
+      }
+    ) %>%
+    unlist() %>%
+    sum()
+
+  return(count_appearances)
+}
+
+#' Define Arc Segment
+#'
+#' @param c Vector c(x, y) defining center of the arc.
+#' @param r Radius of the arc.
+#' @param angles Angles between which the arc segment is defined.
+#' @param length Length of points defining the arc segment.
+#'
+#' @return Data frame of \code{(x, y)} points defining the arc segment.
+arc_segment <- function(c, r, angles = c(0, pi), length = 100) {
+  seqang <- seq(angles[1], angles[2], length = length)
+  x <- c[1] + r * cos(seqang)
+  y <- c[2] + r * sin(seqang)
+
+  data <- data.frame(
+    arc_x = x,
+    arc_y = y
+  )
+
+  return(data)
+}
+
+#' Calculate Arc Trajectory Between Two Points
+#'
+#' Calculates the arc trajectory between two points on the \code{x} axis.
+#'
+#' @param i Position of tarting point.
+#' @param j Position of ending point.
+#'
+#' @return Arc trajectory.
+get_arc_trajectory <- function(i, j) {
+  pair <- c(i, j)
+  center <- c(mean(pair), 0)
+  radius <- abs(diff(pair)) / 2
+
+  arc_trajectory <- dplyr::bind_cols(
+    data.frame(pos_i = i, pos_j = j),
+    arc_segment(center, radius)
+  )
+
+  return(arc_trajectory)
+}
+
 #' Aggregate Base-Pair Probabilities
 #'
 #' @param windowed_folds List of \code{RNAfold} results for each sliding window. Result of \code{fold()} function.
@@ -138,3 +203,4 @@ get_base_pairs_arcs <- function(base_pairs_data) {
 
   return(arc_trajectory)
 }
+
