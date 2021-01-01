@@ -1,18 +1,15 @@
 #' Fold with Sliding Windows
 #'
-#' @param filename
-#' @param winsize
-#' @param span
-#' @param stepsize
-#' @param increased_sample
-#' @param rnafold_params
-#' @param verbose
+#' @param filename The name of the file which the sequences in FASTA format are to be read from.
+#' @param winsize Window size of the sliding windows.
+#' @param stepsize Stepsize of the sliding windows.
+#' @param same_num_samples If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for the calculation of Shannon's entropy.
+#' @param rnafold_params Parameters used by RNAfold. The default is '-p'.
+#' @param verbose If TRUE, fold will print information of performance
 #'
-#' @return
+#' @return List of RNAfold results for each sliding window
 #' @export
-#'
-#' @examples
-fold <- function(filename, winsize, span = NULL, stepsize, increased_sample = TRUE, rnafold_params = "-p", verbose = FALSE) {
+fold <- function(filename, winsize, stepsize, same_num_samples = TRUE, rnafold_params = "-p", verbose = FALSE) {
   # Read whole sequence
   fasta <- seqinr::read.fasta(filename)
   seq <- fasta[[1]] %>%
@@ -26,7 +23,7 @@ fold <- function(filename, winsize, span = NULL, stepsize, increased_sample = TR
   windows <- ceiling(num_nt / stepsize)
 
   # Calculate first window index
-  if (increased_sample) {
+  if (same_num_samples) {
     initial_window <- -floor(winsize / stepsize) + 1
     if (winsize %% stepsize == 0) {
       initial_window <- initial_window + 1
@@ -53,7 +50,7 @@ fold <- function(filename, winsize, span = NULL, stepsize, increased_sample = TR
     end_nt <- start_nt + winsize - 1
 
     # Allow for increased samples
-    if (increased_sample) {
+    if (same_num_samples) {
       start_nt <- ifelse(start_nt < 1, 1, start_nt)
       end_nt <- ifelse(end_nt > num_nt, num_nt, end_nt)
     }
@@ -92,7 +89,7 @@ fold <- function(filename, winsize, span = NULL, stepsize, increased_sample = TR
           window = window
         ) %>%
         dplyr::select(window, pos_i, pos_j, prob)
-      # dplyr::filter(abs(pos_j - pos_i) <= span)
+        # dplyr::filter(abs(pos_j - pos_i) <= span)
     } else {
       next()
     }
@@ -107,7 +104,7 @@ fold <- function(filename, winsize, span = NULL, stepsize, increased_sample = TR
     attr(results[[as.character(window)]], "end_nt") <- end_nt
 
     # Stop loop when end of sequence is reached
-    if (!increased_sample & end_nt > num_nt) {
+    if (!same_num_samples & end_nt > num_nt) {
       break()
     }
   }
