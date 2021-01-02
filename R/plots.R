@@ -1,10 +1,25 @@
-plot_entropy <- function(entropy_data, split_limits, hide_x = FALSE) {
-  gg <- entropy_data %>%
+#' Individual Plots
+#'
+#' @param data Data frame for entropy, base-pair probabilities, ORFs, or UTRs.
+#' @param prob_cutoff Probability cut-off.
+#' @param split_lims Split limits data frame, result of \code{get_split_lims()}.
+#' @param hide_x If TRUE, the \code{x} axis will not be shown.
+#'
+#' @return A \code{ggplot} object.
+#'
+#' @name plots
+NULL
+#> NULL
+
+#' @rdname plots
+#' @export
+plot_entropy <- function(data, split_lims, hide_x = FALSE) {
+  gg <- data %>%
     ggplot2::ggplot() +
     ggplot2::aes(x = position, y = entropy) +
     ggplot2::geom_area(fill = "lightcoral", color = "black") +
     ggplot2::scale_x_continuous(
-      limits = c(split_limits[1], split_limits[2]),
+      limits = c(split_lims[1], split_lims[2]),
       expand = c(0, 0),
       breaks = c(1, seq(0, 10000, 100))
     )
@@ -22,8 +37,10 @@ plot_entropy <- function(entropy_data, split_limits, hide_x = FALSE) {
   return(gg)
 }
 
-plot_base_pairs <- function(base_pairing_data, prob_cutoff = 0.9, split_limits, hide_x = FALSE) {
-  gg <- base_pairing_data %>%
+#' @rdname plots
+#' @export
+plot_base_pairs <- function(data, prob_cutoff = 0.9, split_lims, hide_x = FALSE) {
+  gg <- data %>%
     ggplot2::ggplot() +
     ggplot2::aes(
       x = position,
@@ -34,7 +51,7 @@ plot_base_pairs <- function(base_pairing_data, prob_cutoff = 0.9, split_limits, 
     ggplot2::geom_line(size = 0.5) +
     viridis::scale_color_viridis(limits = c(prob_cutoff, 1), direction = -1) +
     ggplot2::scale_x_continuous(
-      limits = c(split_limits[1], split_limits[2]),
+      limits = c(split_lims[1], split_lims[2]),
       expand = c(0, 0),
       breaks = c(1, seq(0, 10000, 100))
     ) +
@@ -60,8 +77,10 @@ plot_base_pairs <- function(base_pairing_data, prob_cutoff = 0.9, split_limits, 
   return(gg)
 }
 
-plot_orfs <- function(orf_data, split_limits, hide_x = FALSE) {
-  gg <- orf_data %>%
+#' @rdname plots
+#' @export
+plot_orfs <- function(data, split_lims, hide_x = FALSE) {
+  gg <- data %>%
     ggplot2::ggplot() +
     ggplot2::aes(
       xmin = start, ymin = 5,
@@ -69,7 +88,7 @@ plot_orfs <- function(orf_data, split_limits, hide_x = FALSE) {
     ) +
     ggplot2::geom_hline(yintercept = 7.5)
 
-  if (nrow(orf_data) > 0) {
+  if (nrow(data) > 0) {
     gg <- gg +
       ggplot2::aes(
         xmin = start, ymin = 5,
@@ -81,7 +100,7 @@ plot_orfs <- function(orf_data, split_limits, hide_x = FALSE) {
 
   gg <- gg +
     ggplot2::scale_x_continuous(
-      limits = c(split_limits[1], split_limits[2]),
+      limits = c(split_lims[1], split_lims[2]),
       expand = c(0, 0),
       breaks = c(1, seq(0, 10000, 100))
     ) +
@@ -116,12 +135,14 @@ plot_orfs <- function(orf_data, split_limits, hide_x = FALSE) {
   return(gg)
 }
 
-plot_utrs <- function(utr_data, split_limits, hide_x = FALSE) {
-  gg <- utr_data %>%
+#' @rdname plots
+#' @export
+plot_utrs <- function(data, split_lims, hide_x = FALSE) {
+  gg <- data %>%
     ggplot2::ggplot() +
     ggplot2::geom_hline(yintercept = 7.5)
 
-  if (nrow(utr_data) > 0) {
+  if (nrow(data) > 0) {
     gg <- gg +
       ggplot2::aes(
         xmin = start, ymin = 5,
@@ -134,7 +155,7 @@ plot_utrs <- function(utr_data, split_limits, hide_x = FALSE) {
 
   gg <- gg +
     ggplot2::scale_x_continuous(
-      limits = c(split_limits[1], split_limits[2]),
+      limits = c(split_lims[1], split_lims[2]),
       expand = c(0, 0),
       breaks = c(1, seq(0, 10000, 100))
     ) +
@@ -168,6 +189,21 @@ plot_utrs <- function(utr_data, split_limits, hide_x = FALSE) {
   return(gg)
 }
 
+
+#' Plot Structure Map from Sliding Windows
+#'
+#' Plot structure map from sliding windows folding results.
+#'
+#' @param windowed_folds List of \code{RNAfold} results for each sliding window. Result of \code{fold()} function.
+#' @param utr5_lims Vector of lower and upper limits of UTR 5'.
+#' @param utr3_lims Vector of lower and upper limits of UTR 3'.
+#' @param num_facets Number of facets or splits.
+#' @param freq_cutoff Frequency cut-off.
+#' @param prob_cutoff Probability cut-off.
+#' @param plot_list List of plots to display. Options are \code{c("entropy", "bpp", "orf", "utr")}, the order of which will be respected.
+#'
+#' @return A \code{patchwork} object.
+#' @export
 plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NULL, num_facets = 3, freq_cutoff = 0.5, prob_cutoff = 0.9, plot_list = c("entropy", "bpp", "orf", "utr")) {
   # Sequence properties
   sequence_length <- attr(windowed_folds, "seq_length")
@@ -181,42 +217,41 @@ plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NUL
   last_plot <- plot_list[length(plot_list)]
 
   # List of splits
-  splits <- get_split_intervals(sequence_length, num_facets)
+  splits_data <- get_split_lims(sequence_length, num_facets)
 
-  # Calculate Entropy
+  # Calculate entropy
   if (entropy_bool) {
     entropy_data <- windowed_folds %>%
       aggregate_shannon_entropy(prob_cutoff = 0) %>%
       add_position_split_group(nt_num = sequence_length, num_facets)
   }
 
-  # Calculate Folding
+  # Calculate base-pairs
   if (bpp_bool) {
     base_pair_data <- windowed_folds %>%
-      aggregate_positional_freq(freq_cutoff, prob_cutoff) %>%
-      clean_folding_pairs() %>%
-      dplyr::select(-rowid) %>%
-      calculate_folding_pairs() %>%
+      aggregate_base_pairs_prob(freq_cutoff, prob_cutoff) %>%
+      # Calculate
+      get_base_pairs_arcs() %>%
       add_position_split_group(nt_num = sequence_length, num_facets)
   }
 
   # Calculate ORFs
   if (orf_bool) {
     orf_data <- get_ORFs(seq, calc_groups = TRUE) %>%
-      add_region_split_group(splits, type = "orf")
+      add_region_split_group(splits_data, type = "orf")
   }
 
   # Parse UTRs
   if (utr_bool) {
     utr_data <- build_UTRs_data(utr5_lims, utr3_lims) %>%
-      add_region_split_group(splits, type = "utr")
+      add_region_split_group(splits_data, type = "utr")
   }
 
   # Create list of plots
   plot_list <- list()
 
   for (facet in 1:num_facets) {
-    split_limits <- splits %>%
+    split_lims <- splits_data %>%
       dplyr::filter(group == facet) %>%
       dplyr::select(split_start, split_end) %>%
       unlist()
@@ -225,7 +260,7 @@ plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NUL
       plot_list[[paste0("entropy_", facet)]] <- entropy_data %>%
         dplyr::filter(group == facet) %>%
         plot_entropy(
-          split_limits,
+          split_lims,
           hide_x = ("entropy" != last_plot)
         )
     }
@@ -235,7 +270,7 @@ plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NUL
         dplyr::filter(group == facet) %>%
         plot_base_pairs(
           prob_cutoff = prob_cutoff,
-          split_limits,
+          split_lims,
           hide_x = ("bpp" != last_plot)
         )
     }
@@ -244,7 +279,7 @@ plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NUL
       plot_list[[paste0("orf_", facet)]] <- orf_data %>%
         dplyr::filter(group == facet) %>%
         plot_orfs(
-          split_limits,
+          split_lims,
           hide_x = ("orf" != last_plot)
         )
     }
@@ -253,7 +288,7 @@ plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NUL
       plot_list[[paste0("utr_", facet)]] <- utr_data %>%
         dplyr::filter(group == facet) %>%
         plot_utrs(
-          split_limits,
+          split_lims,
           hide_x = ("utr" != last_plot)
         )
     }
