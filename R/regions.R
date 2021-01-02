@@ -37,7 +37,7 @@ get_ORFs <- function(seq, calc_groups = TRUE) {
 #' Build UTRs Data Frame
 #'
 #' @param utr5_lims Vector of lower and upper limits of UTR 5'.
-#' @param utr3_lims Vector of lower and upper limits of UTR 3'
+#' @param utr3_lims Vector of lower and upper limits of UTR 3'.
 #'
 #' @return Data frame specifying \code{start} and \code{end} of each UTR.
 build_UTRs_data <- function(utr5_lims = NULL, utr3_lims = NULL) {
@@ -74,5 +74,3 @@ build_UTRs_data <- function(utr5_lims = NULL, utr3_lims = NULL) {
 
   return(utr_data)
 }
-
-

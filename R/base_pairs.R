@@ -203,4 +203,3 @@ get_base_pairs_arcs <- function(base_pairs_data) {
 
   return(arc_trajectory)
 }
-

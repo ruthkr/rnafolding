@@ -7,7 +7,7 @@
 #' @param winsize Window size of the sliding windows.
 #' @param stepsize Step size of the sliding windows.
 #' @param same_num_samples If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for calculating Shannon's entropy.
-#' @param rnafold_params Parameters used by \code{RNAfold}. The default is '-p'.
+#' @param rnafold_params Parameters used by \code{RNAfold}. The default is \code{'-p'}.
 #' @param verbose If TRUE, fold will print information of performance.
 #'
 #' @return List of \code{RNAfold} results for each sliding window.
