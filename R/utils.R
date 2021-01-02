@@ -28,27 +28,27 @@ read_ps_dotplot <- function(filename) {
   }
 }
 
-#' Get Position Split Intervals Data
+#' Get Position Split Limits Data
 #'
-#' Get position split intervals data frame when using facets in
+#' Get position split limits data frame when using facets in
 #' \code{plot_summary_map()} function.
 #'
 #' @param nt_num Number of nucleotides of the sequence.
 #' @param num_facets Number of facets or splits.
 #'
-#' @return Split intervals data frame.
-get_split_intervals <- function(nt_num, num_facets) {
+#' @return Split limits data frame.
+get_split_lims <- function(nt_num, num_facets) {
   facet_width <- ceiling(nt_num / num_facets)
-  intervals <- seq(0, num_facets * facet_width, facet_width)
+  lims <- seq(0, num_facets * facet_width, facet_width)
 
-  intervals_data <- data.frame(end = intervals) %>%
+  lims_data <- data.frame(end = lims) %>%
     dplyr::mutate(start = dplyr::lag(end) + 1) %>%
     dplyr::slice(-1) %>%
     tibble::rowid_to_column(var = "group") %>%
     dplyr::mutate(group = as.factor(group)) %>%
     dplyr::select(group, split_start = start, split_end = end)
 
-  return(intervals_data)
+  return(lims_data)
 }
 
 #' Add Split Group to Positional Data
@@ -82,11 +82,11 @@ add_position_split_group <- function(data, nt_num, num_facets) {
 #' in \code{plot_summary_map()} function.
 #'
 #' @param data Data frame describing ORFs or UTRs.
-#' @param splits Split intervals data frame, result of \code{get_split_intervals()}.
+#' @param split_lims Split limits data frame, result of \code{get_split_lims()}.
 #' @param type Type of region data. Either "orf" or "utr".
 #'
 #' @return Data frame with additional grouping variable(s).
-add_region_split_group <- function(data, splits, type = c("orf", "utr")) {
+add_region_split_group <- function(data, split_lims, type = c("orf", "utr")) {
   type <- match.arg(type)
 
   data <- data %>%
