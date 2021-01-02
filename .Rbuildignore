@@ -3,3 +3,4 @@
 ^dev$
 ^LICENSE\.md$
 ^\.DS_Store$
+^README\.Rmd$
