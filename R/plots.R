@@ -204,7 +204,7 @@ plot_utrs <- function(data, split_lims, hide_x = FALSE) {
 #'
 #' @return A \code{patchwork} object.
 #' @export
-plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NULL, num_facets = 3, freq_cutoff = 0.5, prob_cutoff = 0.9, plot_list = c("entropy", "bpp", "orf", "utr")) {
+plot_structure_map <- function(windowed_folds, utr5_lims = NULL, utr3_lims = NULL, num_facets = 1, freq_cutoff = 0.5, prob_cutoff = 0.9, plot_list = c("entropy", "bpp", "orf", "utr")) {
   # Sequence properties
   sequence_length <- attr(windowed_folds, "seq_length")
   seq <- attr(windowed_folds, "seq")
