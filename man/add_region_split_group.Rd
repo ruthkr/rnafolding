@@ -4,12 +4,12 @@
 \alias{add_region_split_group}
 \title{Add Split Group to Region Data}
 \usage{
-add_region_split_group(data, splits, type = c("orf", "utr"))
+add_region_split_group(data, split_lims, type = c("orf", "utr"))
 }
 \arguments{
 \item{data}{Data frame describing ORFs or UTRs.}
 
-\item{splits}{Split intervals data frame, result of \code{get_split_intervals()}.}
+\item{split_lims}{Split limits data frame, result of \code{get_split_lims()}.}
 
 \item{type}{Type of region data. Either "orf" or "utr".}
 }

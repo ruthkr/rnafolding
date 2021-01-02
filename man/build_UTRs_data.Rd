@@ -9,7 +9,7 @@ build_UTRs_data(utr5_lims = NULL, utr3_lims = NULL)
 \arguments{
 \item{utr5_lims}{Vector of lower and upper limits of UTR 5'.}
 
-\item{utr3_lims}{Vector of lower and upper limits of UTR 3'}
+\item{utr3_lims}{Vector of lower and upper limits of UTR 3'.}
 }
 \value{
 Data frame specifying \code{start} and \code{end} of each UTR.

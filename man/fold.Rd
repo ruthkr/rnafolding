@@ -22,7 +22,7 @@ fold(
 
 \item{same_num_samples}{If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for calculating Shannon's entropy.}
 
-\item{rnafold_params}{Parameters used by \code{RNAfold}. The default is '-p'.}
+\item{rnafold_params}{Parameters used by \code{RNAfold}. The default is \code{'-p'}.}
 
 \item{verbose}{If TRUE, fold will print information of performance.}
 }
