@@ -90,7 +90,7 @@ add_region_split_group <- function(data, split_lims, type = c("orf", "utr")) {
   type <- match.arg(type)
 
   data <- data %>%
-    tidyr::crossing(splits) %>%
+    tidyr::crossing(split_lims) %>%
     # Check intersection
     dplyr::mutate(
       intersect = !(split_start > end | start > split_end)

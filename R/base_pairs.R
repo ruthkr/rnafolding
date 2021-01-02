@@ -193,7 +193,7 @@ get_base_pairs_arcs <- function(base_pairs_data) {
   # Include probability
   arc_trajectory <- arc_trajectory %>%
     dplyr::left_join(
-      positional_freq_data,
+      base_pairs_data,
       by = c("pos_i", "pos_j")
     ) %>%
     dplyr::rename(
