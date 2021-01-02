@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
-# rnafolding <!-- <img src="man/figures/logo.png" align="right" width="120"/> -->
+# rnafolding <img src="man/figures/logo.png" align="right" width="120"/>
 
 <!-- badges: start -->
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/rnafolding)](https://cran.r-project.org/package=rnafolding)
