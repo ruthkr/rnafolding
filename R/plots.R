@@ -1,3 +1,15 @@
+#' @noRd
+hide_x_axis <- function(gg) {
+  gg <- gg +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_blank()
+    )
+
+  return(gg)
+}
+
 #' Individual Plots
 #'
 #' @param data Data frame for entropy, base-pair probabilities, ORFs, or UTRs.
@@ -25,13 +37,7 @@ plot_entropy <- function(data, split_lims, hide_x = FALSE) {
     )
 
   if (hide_x) {
-    gg <- gg +
-      ggplot2::theme(
-        # x-Axis
-        axis.title.x = ggplot2::element_blank(),
-        axis.text.x = ggplot2::element_blank(),
-        axis.ticks.x = ggplot2::element_blank()
-      )
+    gg <- hide_x_axis(gg)
   }
 
   return(gg)
@@ -65,13 +71,7 @@ plot_base_pairs <- function(data, prob_cutoff = 0.9, split_lims, hide_x = FALSE)
     )
 
   if (hide_x) {
-    gg <- gg +
-      ggplot2::theme(
-        # x-Axis
-        axis.title.x = ggplot2::element_blank(),
-        axis.text.x = ggplot2::element_blank(),
-        axis.ticks.x = ggplot2::element_blank()
-      )
+    gg <- hide_x_axis(gg)
   }
 
   return(gg)
@@ -124,12 +124,7 @@ plot_orfs <- function(data, split_lims, hide_x = FALSE) {
 
 
   if (hide_x) {
-    gg <- gg +
-      ggplot2::theme(
-        axis.title.x = ggplot2::element_blank(),
-        axis.text.x = ggplot2::element_blank(),
-        axis.ticks.x = ggplot2::element_blank()
-      )
+    gg <- hide_x_axis(gg)
   }
 
   return(gg)
@@ -178,12 +173,7 @@ plot_utrs <- function(data, split_lims, hide_x = FALSE) {
     )
 
   if (hide_x) {
-    gg <- gg +
-      ggplot2::theme(
-        axis.title.x = ggplot2::element_blank(),
-        axis.text.x = ggplot2::element_blank(),
-        axis.ticks.x = ggplot2::element_blank()
-      )
+    gg <- hide_x_axis(gg)
   }
 
   return(gg)
