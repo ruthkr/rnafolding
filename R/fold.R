@@ -9,10 +9,11 @@
 #' @param same_num_samples If TRUE, fold will perform additional foldings at the beginning and end of the sequence. This allows the beginning and end of the sequence to have the same amount of samples/windows go through it. This is specially important for calculating Shannon's entropy.
 #' @param rnafold_params Parameters used by \code{RNAfold}. The default is \code{'-p'}.
 #' @param verbose If TRUE, fold will print information of performance.
+#' @param rnafold_dir The path to the directory where RNAfold is. If NULL, it assumes that the dir is in the path
 #'
 #' @return List of \code{RNAfold} results for each sliding window.
 #' @export
-fold <- function(filename, winsize, stepsize, same_num_samples = TRUE, rnafold_params = "-p", verbose = FALSE) {
+fold <- function(filename, winsize, stepsize, same_num_samples = TRUE, rnafold_params = "-p", verbose = FALSE, rnafold_dir = NULL) {
   # Read whole sequence
   fasta <- seqinr::read.fasta(filename)
   seq <- fasta[[1]] %>%
@@ -70,10 +71,13 @@ fold <- function(filename, winsize, stepsize, same_num_samples = TRUE, rnafold_p
     )
 
     # Run RNAfold
+    if(!is.null(rnafold_dir)) { rnafold_cmd <- paste(rnafold_dir, "/RNAfold ", sep = "") }
+    else { rnafold_cmd <- "RNAfold " }
+
     rnafold_res <- system(
       paste0(
         "cd ", temp_dir, "; ",
-        "RNAfold ",
+        rnafold_cmd,
         rnafold_params,
         " -i ", temp_fasta_path
       ),
