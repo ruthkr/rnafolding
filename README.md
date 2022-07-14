@@ -12,12 +12,11 @@
 <!-- [![pkgdown status](https://github.com/ruthkr/rnafolding/workflows/pkgdown/badge.svg)](https://ruthkr.github.io/rnafolding/) -->
 <!-- badges: end -->
 
-**rnafolding** is a package to…
+**rnafolding** is a package to predict RNA scructures thermodynamically using a sliding-windows approach and plot them.
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -32,8 +31,7 @@ devtools::install_github("ruthkr/rnafolding")
 
 ## Quick start
 
-This is a basic example which shows you how to run windowed folding from
-a FASTA file:
+This is a basic example which shows you how to run windowed folding from a FASTA file:
 
 ``` r
 # Load the package
@@ -50,8 +48,9 @@ windows_5S <- rnafolding::fold(
 )
 ```
 
-After getting the windowed folding results, you can plot the structure
-map as follows:
+*Note that you need to get the RNAfold tool from the VienaRNA package in your PATH variable. Otherwise you can use the `rnafold_dir` argument from the `fold()` function to specify it.*
+
+After getting the windowed folding results, you can plot the structure map as follows:
 
 ``` r
 plot_structure_map(

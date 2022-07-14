@@ -10,7 +10,8 @@ fold(
   stepsize,
   same_num_samples = TRUE,
   rnafold_params = "-p",
-  verbose = FALSE
+  verbose = FALSE,
+  rnafold_dir = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ fold(
 \item{rnafold_params}{Parameters used by \code{RNAfold}. The default is \code{'-p'}.}
 
 \item{verbose}{If TRUE, fold will print information of performance.}
+
+\item{rnafold_dir}{The path to the directory where RNAfold is. If NULL, it assumes that the dir is in the path}
 }
 \value{
 List of \code{RNAfold} results for each sliding window.
